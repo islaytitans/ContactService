@@ -6,7 +6,7 @@ using ContactService.Dto;
 
 namespace ContactService.Interfaces
 {
-    public interface IBuilder
+    public interface IContactBuilder
     {
         Contact Assemble(Person person);
     }

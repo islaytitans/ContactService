@@ -2,17 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ContactService.Dto;
 using ContactService.Interfaces;
 
 namespace ContactService.Factories
 {
-    public class ContactsFactory : IFactory
+    public class ContactFactory : IContactFactory
     {
-        private readonly IBuilder _builder;
+        private readonly IContactBuilder _contactBuilder;
 
-        public ContactsFactory(IBuilder builder)
+        public ContactFactory(IContactBuilder contactBuilder)
         {
-            _builder = builder;
+            _contactBuilder = contactBuilder;
+        }
+
+        public IEnumerable<Contact> Manufacture(IEnumerable<Person> persons)
+        {
+            foreach (var person in persons)
+            {
+                yield return _contactBuilder.Assemble(person);
+            }
         }
     }
 }

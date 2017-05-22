@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using ContactService.Dto;
+using ContactService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +14,13 @@ namespace ContactService.Controllers
     [Route("api/[controller]")]
     public class PersonController : Controller
     {
-        public PersonController()
+        private readonly IContactFactory _contactFactory;
+        private readonly IContactService _contactService;
+
+        public PersonController(IContactFactory contactFactory, IContactService contactService)
         {
-            
+            _contactFactory = contactFactory;
+            _contactService = contactService;
         }
 
         [AllowAnonymous]
@@ -36,6 +42,10 @@ namespace ContactService.Controllers
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new ArgumentException($"{nameof(persons)} was not valid"));
             }
+
+            var contacts = _contactFactory.Manufacture(persons);
+
+            contacts.Where(c => _contactService.Add(c));
         }
     }
 }

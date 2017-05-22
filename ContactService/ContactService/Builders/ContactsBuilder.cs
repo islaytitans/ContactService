@@ -7,7 +7,7 @@ using ContactService.Interfaces;
 
 namespace ContactService.Builders
 {
-    public class ContactsBuilder : IBuilder
+    public class ContactBuilder : IContactBuilder
     {
         public Contact Assemble(Person person)
         {

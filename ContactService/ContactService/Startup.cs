@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ContactService.Builders;
+using ContactService.Factories;
+using ContactService.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +30,9 @@ namespace ContactService
         {
             // Add framework services.
             services.AddMvc();
+            services.AddTransient<IContactBuilder, ContactBuilder>();
+            services.AddTransient<IContactFactory, ContactFactory>();
+            services.AddTransient<IContactService, Services.ContactService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
