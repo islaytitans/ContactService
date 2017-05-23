@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using ContactService.Dto;
 using ContactService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,7 @@ namespace ContactService.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public JsonResult Add([FromBody]IEnumerable<Person> persons)
+        public async Task<JsonResult> Add([FromBody]IEnumerable<Person> persons)
         {
             if (persons == null)
             {
@@ -45,7 +46,14 @@ namespace ContactService.Controllers
 
             var contacts = _contactFactory.Manufacture(persons);
 
-            contacts.Where(c => _contactService.Add(c));
+            var results = new List<KeyValuePair<string, HttpStatusCode>>();
+            foreach (var contact in contacts)
+            {
+                results.Add(new KeyValuePair<string, HttpStatusCode>(contact.Email, await _contactService.Add(contact)));
+            }
+
+            // TODO status code
+            return new JsonResult(results);
         }
     }
 }
