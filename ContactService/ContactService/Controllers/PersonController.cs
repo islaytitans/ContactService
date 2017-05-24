@@ -46,14 +46,32 @@ namespace ContactService.Controllers
 
             var contacts = _contactFactory.Manufacture(persons);
 
-            var results = new List<KeyValuePair<string, HttpStatusCode>>();
+            //var results = new List<KeyValuePair<string, HttpStatusCode>>();
+            //foreach (var contact in contacts)
+            //{
+            //    results.Add(new KeyValuePair<string, HttpStatusCode>(contact.Email, await _contactService.Add(contact)));
+            //}
+
+            var taskList = new List<Task<string>>();
+
             foreach (var contact in contacts)
             {
-                results.Add(new KeyValuePair<string, HttpStatusCode>(contact.Email, await _contactService.Add(contact)));
+                taskList.Add(_contactService.Add("TODO", contact));
             }
 
-            // TODO status code
-            return new JsonResult(results);
+            try
+            {
+                await Task.WhenAll(taskList.ToList());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return new JsonResult(e.Message);
+            }
+
+            Response.StatusCode = (int) HttpStatusCode.OK;
+            return new JsonResult(taskList);
         }
     }
 }

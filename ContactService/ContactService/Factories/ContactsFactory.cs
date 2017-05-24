@@ -20,7 +20,29 @@ namespace ContactService.Factories
         {
             foreach (var person in persons)
             {
-                yield return _contactBuilder.Assemble(person);
+                Contact contact;
+
+                try
+                {
+                    contact = _contactBuilder.Assemble(person);
+                }
+                catch (ArgumentNullException e)
+                {
+                    Console.WriteLine(e);
+                    continue;
+                }
+                catch (InvalidCastException e)
+                {
+                    Console.WriteLine(e);
+                    continue;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+
+                yield return contact;
             }
         }
     }
