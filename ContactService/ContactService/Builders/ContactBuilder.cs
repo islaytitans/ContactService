@@ -21,7 +21,8 @@ namespace ContactService.Builders
                 Email = person.Email,
                 FirstName = person.FirstName,
                 LastName = person.Surname,
-                Gender = ParseGender(person.Gender)
+                Gender = ParseGender(person.Gender),
+                SamplesOrdered = ParseSampleOrders(person.Samples)
             };
 
             return contact;
@@ -42,6 +43,16 @@ namespace ContactService.Builders
                 default:
                     throw new InvalidCastException();
             }
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> ParseSampleOrders(string samples)
+        {
+            string[] samplesCollection = samples.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+
+            return (from s in samplesCollection
+                    let sample = s.Trim().Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
+                    where sample.Length == 2
+                    select new KeyValuePair<string, string>(sample[0], sample[1]));
         }
     }
 }

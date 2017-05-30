@@ -8,20 +8,23 @@ using ContactService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace ContactService.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("contactservice/[action]")]
     public class PersonController : Controller
     {
         private readonly IContactFactory _contactFactory;
         private readonly IContactService _contactService;
+        private readonly IConfigurationRoot _configuration;
 
-        public PersonController(IContactFactory contactFactory, IContactService contactService)
+        public PersonController(IContactFactory contactFactory, IContactService contactService, IConfigurationRoot configuration)
         {
             _contactFactory = contactFactory;
             _contactService = contactService;
+            _configuration = configuration;
         }
 
         [AllowAnonymous]
@@ -46,17 +49,13 @@ namespace ContactService.Controllers
 
             var contacts = _contactFactory.Manufacture(persons);
 
-            //var results = new List<KeyValuePair<string, HttpStatusCode>>();
-            //foreach (var contact in contacts)
-            //{
-            //    results.Add(new KeyValuePair<string, HttpStatusCode>(contact.Email, await _contactService.Add(contact)));
-            //}
-
             var taskList = new List<Task<string>>();
+
+            string contactsDestinationUrl = _configuration["ContactDestinationUrl"];
 
             foreach (var contact in contacts)
             {
-                taskList.Add(_contactService.Add("TODO", contact));
+                taskList.Add(_contactService.Add(contactsDestinationUrl, contact));
             }
 
             try

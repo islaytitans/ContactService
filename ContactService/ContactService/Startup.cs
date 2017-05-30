@@ -30,6 +30,7 @@ namespace ContactService
         {
             // Add framework services.
             services.AddMvc();
+            services.AddSingleton(Configuration);
             services.AddTransient<IContactBuilder, ContactBuilder>();
             services.AddTransient<IContactFactory, ContactFactory>();
             services.AddTransient<IContactService, Services.ContactService>();
@@ -60,7 +61,7 @@ namespace ContactService
 
         private void ConfigureRoutes(IRouteBuilder routeBuilder)
         {
-            routeBuilder.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+            routeBuilder.MapRoute("Default", "{controller=Person}/{action=Index}/{id?}");
         }
     }
 }

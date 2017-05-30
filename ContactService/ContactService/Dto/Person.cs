@@ -14,6 +14,6 @@ namespace ContactService.Dto
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string Gender { get; set; }
-
+        public string Samples { get; set; }
     }
 }

@@ -9,7 +9,6 @@ namespace ContactService.Interfaces
 {
     public interface IContactService
     {
-        Task<HttpStatusCode> Add(Contact contact);
         Task<string> Add(string endPoint, Contact contact);
     }
 }
